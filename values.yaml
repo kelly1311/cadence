@@ -149,7 +149,7 @@ server:
 
     persistence:
       default:
-        driver: "" # cassandra or sql
+        driver: "sql" # cassandra or sql
 
         cassandra:
           hosts: []
@@ -166,12 +166,12 @@ server:
           # protoVersion: 4
 
         sql:
-          pluginName: "" # mysql
-          host: ""
-          # port: 3306
+          pluginName: "mysql" # mysql
+          host: "my-sql-symphony.c6418zenspuo.us-east-2.rds.amazonaws.com"
+          port: 3306
           database: cadence
-          user: ""
-          password: ""
+          user: "admin-symphony"
+          password: "admin2022"
           existingSecret: ""
           # maxConns: 20
           # maxIdleConns: 20
@@ -180,13 +180,13 @@ server:
             # tx_isolation: "READ-COMMITTED"
 
       visibility:
-        driver: "" # cassandra or sql
+        driver: "sql" # cassandra or sql
 
         cassandra:
           hosts: []
           # port: 9042
           keyspace: cadence_visibility
-          user: ""
+          user: "cadence"
           password: ""
           existingSecret: ""
           consistency: One
@@ -197,12 +197,12 @@ server:
           # protoVersion: 4
 
         sql:
-          pluginName: "" # mysql
-          host: ""
-          # port: 3306
+          pluginName: "mysql" # mysql
+          host: "my-sql-symphony.c6418zenspuo.us-east-2.rds.amazonaws.com"
+          port: 3306
           database: cadence_visibility
-          user: ""
-          password: ""
+          user: "admin-symphony"
+          password: "admin2022"
           existingSecret: ""
           # maxConns: 20
           # maxIdleConns: 20
@@ -312,7 +312,7 @@ web:
 
   image:
     repository: ubercadence/web
-    tag: v3.29.5
+    tag: v3.28.7
     pullPolicy: IfNotPresent
 
   tcheck:
@@ -384,7 +384,7 @@ schema:
     backoffLimit: 100
 
 cassandra:
-  enabled: true
+  enabled: false
   image:
     repo: cassandra
     tag: 3.11.3
@@ -403,3 +403,4 @@ mysql:
   initializationFiles:
     user.sql: |-
       GRANT ALL PRIVILEGES ON *.* TO 'cadence'@'%';
+
