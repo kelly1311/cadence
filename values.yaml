@@ -315,7 +315,6 @@ web:
 
   image:
     repository: azacreu2ossc01.azurecr.io/ubercadence/web
-#estaba la v3.38.7
     tag: v3.29.5
     pullPolicy: IfNotPresent
 
