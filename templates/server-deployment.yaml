@@ -125,12 +125,19 @@ spec:
             - name: config
               mountPath: /etc/cadence/config/dynamicconfig/config.yaml
               subPath: dynamic_config.yaml
+            - name: ca-pemstore
+              mountPath: /etc/ssl/certs/my-cert.pem
+              subPath: BaltimoreCyberTrustRoot.crt.pem
+              readOnly: true
           resources:
             {{- toYaml (default $.Values.server.resources $serviceValues.resources) | nindent 12 }}
       volumes:
         - name: config
           configMap:
             name: {{ include "cadence.fullname" $ }}
+        - name: ca-pemstore
+          configMap:
+            name: ca-pemstore
       {{- with (default $.Values.server.nodeSelector $serviceValues.nodeSelector) }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

@@ -44,6 +44,11 @@ spec:
             {{- toYaml .Values.web.securityContext | nindent 12 }}
           image: "{{ .Values.web.image.repository }}:{{ .Values.web.image.tag }}"
           imagePullPolicy: {{ .Values.web.image.pullPolicy }}
+          volumeMounts:
+          - name: ca-pemstore
+            mountPath: /etc/ssl/certs/my-cert.pem
+            subPath: BaltimoreCyberTrustRoot.crt.pem
+            readOnly: true
           env:
           - name: CADENCE_TCHANNEL_PEERS
             value: "{{ include "cadence.fullname" . }}-frontend:{{ .Values.server.frontend.service.port }}"
@@ -62,6 +67,10 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.web.resources | nindent 12 }}
+      volumes:
+      - name: ca-pemstore
+        configMap:
+          name: ca-pemstore
       {{- with .Values.web.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

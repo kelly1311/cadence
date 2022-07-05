@@ -115,6 +115,10 @@ spec:
               value: {{ include "cadence.persistence.sql.user" (list $ $store) }}
             - name: SQL_PASSWORD
               value: {{ include "cadence.persistence.sql.password" (list $ $store) }}
+            - name: SQL_TLS
+              value: "true"
+            - nane: SQL_TLS_ENABLE_HOST_VERIFICATION
+              value: "false"
             {{- with $storeConfig.sql.connectAttributes }}
             - name: SQL_CONNECT_ATTRIBUTES
               value: {{ include "to-query" . }}
@@ -132,6 +136,11 @@ spec:
             {{- toYaml $.Values.server.securityContext | nindent 12 }}
           image: "{{ $.Values.server.image.repository }}:{{ $.Values.server.image.tag }}"
           imagePullPolicy: {{ $.Values.server.image.pullPolicy }}
+          volumeMounts:
+          - name: ca-pemstore
+            mountPath: /etc/ssl/certs/my-cert.pem
+            subPath: BaltimoreCyberTrustRoot.crt.pem
+            readOnly: true
           args: ["cadence-{{ include "cadence.persistence.driver" (list $ $store) }}-tool", "setup-schema", "-v", "0.0"]
           env:
             {{- if eq (include "cadence.persistence.driver" (list $ $store)) "cassandra" }}
@@ -163,13 +172,20 @@ spec:
               value: {{ include "cadence.persistence.sql.user" (list $ $store) }}
             - name: SQL_PASSWORD
               value: {{ include "cadence.persistence.sql.password" (list $ $store) }}
+            - name: SQL_TLS
+              value: "true"
+            - name: SQL_TLS_CA_FILE
+              value: /etc/ssl/certs/my-cert.pem
             {{- with $storeConfig.sql.connectAttributes }}
             - name: SQL_CONNECT_ATTRIBUTES
               value: {{ include "to-query" . }}
             {{- end }}
             {{- end }}
         {{- end }}
-
+      volumes:
+      - name: ca-pemstore
+        configMap:
+          name: ca-pemstore
 ---
 {{- end }}
 {{- if .Values.schema.update.enabled }}
@@ -247,6 +263,11 @@ spec:
             {{- toYaml $.Values.server.securityContext | nindent 12 }}
           image: "{{ $.Values.server.image.repository }}:{{ $.Values.server.image.tag }}"
           imagePullPolicy: {{ $.Values.server.image.pullPolicy }}
+          volumeMounts:
+          - name: ca-pemstore
+            mountPath: /etc/ssl/certs/my-cert.pem
+            subPath: BaltimoreCyberTrustRoot.crt.pem
+            readOnly: true
           {{- if eq (include "cadence.persistence.driver" (list $ $store)) "cassandra" }}
           # args: ["cadence-cassandra-tool", "update-schema", "-d", "/etc/cadence/schema/cassandra/{{ include "cadence.persistence.schema" $store }}/versioned"]
           args: ['sh', '-c', 'cadence-cassandra-tool update-schema -d /etc/cadence/schema/cassandra/{{ include "cadence.persistence.schema" $store }}/versioned']
@@ -287,10 +308,19 @@ spec:
               value: {{ include "cadence.persistence.sql.user" (list $ $store) }}
             - name: SQL_PASSWORD
               value: {{ include "cadence.persistence.sql.password" (list $ $store) }}
+            - name: SQL_TLS
+              value: "true"
+            - name: SQL_TLS_CA_FILE
+              value: /etc/ssl/certs/my-cert.pem
             {{- with $storeConfig.sql.connectAttributes }}
             - name: SQL_CONNECT_ATTRIBUTES
-              value: {{ include "to-query" . }}
+              #value: {{ include "to-query" . }}
+              value: ""
             {{- end }}
             {{- end }}
         {{- end }}
+      volumes:
+      - name: ca-pemstore
+        configMap:
+          name: ca-pemstore
 {{- end }}

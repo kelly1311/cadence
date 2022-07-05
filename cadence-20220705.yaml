@@ -7,7 +7,7 @@ debug: false
 
 server:
   image:
-    repository: azacreu2ossc01.azurecr.io/ubercadence/server
+    repository: ubercadence/server
     tag: 0.23.2
     pullPolicy: IfNotPresent
 
@@ -52,8 +52,7 @@ server:
     # requests:
     #  cpu: 100m
     #  memory: 128Mi
-  nodeSelector: 
-    agentpool: somwfmc01
+  nodeSelector: {}
   tolerations: []
   affinity: {}
 
@@ -167,18 +166,18 @@ server:
           # protoVersion: 4
 
         sql:
-          pluginName: mysql # mysql
-          host: mysqleu2ossc02.mysql.database.azure.com
+          pluginName: "mysql" # mysql
+          host: "my-sql-symphony.c6418zenspuo.us-east-2.rds.amazonaws.com"
           port: 3306
           database: cadence
-          user: cadence@mysqleu2ossc02
-          password: C4d3nc3DBus3r*
+          user: "admin-symphony"
+          password: "admin2022"
           existingSecret: ""
           # maxConns: 20
           # maxIdleConns: 20
           # maxConnLifetime: "1h"
           # connectAttributes:
-            
+            # tx_isolation: "READ-COMMITTED"
 
       visibility:
         driver: "sql" # cassandra or sql
@@ -187,7 +186,7 @@ server:
           hosts: []
           # port: 9042
           keyspace: cadence_visibility
-          user: ""
+          user: "cadence"
           password: ""
           existingSecret: ""
           consistency: One
@@ -198,17 +197,19 @@ server:
           # protoVersion: 4
 
         sql:
-          pluginName: mysql # mysql
-          host: mysqleu2ossc02.mysql.database.azure.com
+          pluginName: "mysql" # mysql
+          host: "my-sql-symphony.c6418zenspuo.us-east-2.rds.amazonaws.com"
           port: 3306
           database: cadence_visibility
-          user: cadence@mysqleu2ossc02
-          password: C4d3nc3DBus3r*
+          user: "admin-symphony"
+          password: "admin2022"
           existingSecret: ""
           # maxConns: 20
           # maxIdleConns: 20
           # maxConnLifetime: "1h"
-          # connectAttributes: 
+          # connectAttributes:
+            # tx_isolation: "READ-COMMITTED"
+
   frontend:
     # replicaCount: 1
     service:
@@ -229,8 +230,7 @@ server:
     podSecurityContext: {}
     securityContext: {}
     resources: {}
-    nodeSelector: 
-      agentpool: somwfmc01
+    nodeSelector: {}
     tolerations: []
     affinity: {}
 
@@ -254,8 +254,7 @@ server:
     podSecurityContext: {}
     securityContext: {}
     resources: {}
-    nodeSelector: 
-      agentpool: somwfmc01
+    nodeSelector: {}
     tolerations: []
     affinity: {}
 
@@ -279,8 +278,7 @@ server:
     podSecurityContext: {}
     securityContext: {}
     resources: {}
-    nodeSelector: 
-      agentpool: somwfmc01
+    nodeSelector: {}
     tolerations: []
     affinity: {}
 
@@ -303,8 +301,7 @@ server:
     podSecurityContext: {}
     securityContext: {}
     resources: {}
-    nodeSelector: 
-      agentpool: somwfmc01
+    nodeSelector: {}
     tolerations: []
     affinity: {}
 
@@ -314,14 +311,13 @@ web:
   replicaCount: 1
 
   image:
-    repository: azacreu2ossc01.azurecr.io/ubercadence/web
-#estaba la v3.38.7
+    repository: ubercadence/web
     tag: v3.29.5
     pullPolicy: IfNotPresent
 
   tcheck:
     image:
-      repository: azacreu2ossc01.azurecr.io/banzaicloud/tcheck
+      repository: ghcr.io/banzaicloud/tcheck
       tag: latest
       pullPolicy: IfNotPresent
 
@@ -369,8 +365,7 @@ web:
     #  cpu: 100m
     #  memory: 128Mi
 
-  nodeSelector: 
-    agentpool: somwfmc01
+  nodeSelector: {}
 
   tolerations: []
 
@@ -382,10 +377,10 @@ dynamicConfig:
 
 schema:
   setup:
-    enabled: false
+    enabled: true
     backoffLimit: 100
   update:
-    enabled: false
+    enabled: true
     backoffLimit: 100
 
 cassandra:
@@ -408,3 +403,4 @@ mysql:
   initializationFiles:
     user.sql: |-
       GRANT ALL PRIVILEGES ON *.* TO 'cadence'@'%';
+

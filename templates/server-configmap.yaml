@@ -40,6 +40,9 @@ data:
             connectProtocol: "tcp"
             user: {{ include "cadence.persistence.sql.user" (list . "default") }}
             password: {{ `{{ .Env.CADENCE_STORE_PASSWORD }}` }}
+            tls: 
+              enabled: true
+              caFile: /etc/ssl/certs/my-cert.pem
             {{- with (omit .Values.server.config.persistence.default.sql "pluginName" "host" "port" "connectAddr" "connectProtocol" "database" "databaseName" "user" "password" "existingSecret") }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
@@ -51,6 +54,9 @@ data:
             hosts: {{ include "cadence.persistence.cassandra.hosts" (list . "visibility") }}
             port: {{ include "cadence.persistence.cassandra.port" (list . "visibility") }}
             password: {{ `{{ .Env.CADENCE_VISIBILITY_STORE_PASSWORD }}` }}
+            TLS: 
+              enabled: true
+              caFile: /etc/ssl/certs/my-cert.pem
             {{- with (omit .Values.server.config.persistence.visibility.cassandra "hosts" "port" "password" "existingSecret") }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
@@ -63,6 +69,9 @@ data:
             connectProtocol: "tcp"
             user: {{ include "cadence.persistence.sql.user" (list . "visibility") }}
             password: {{ `{{ .Env.CADENCE_VISIBILITY_STORE_PASSWORD }}` }}
+            tls: 
+              enabled: true
+              caFile: /etc/ssl/certs/my-cert.pem
             {{- with (omit .Values.server.config.persistence.visibility.sql "pluginName" "host" "port" "connectAddr" "connectProtocol" "database" "databaseName" "user" "password" "existingSecret") }}
             {{- toYaml . | nindent 12 }}
             {{- end }}

@@ -7,7 +7,7 @@ debug: false
 
 server:
   image:
-    repository: azacreu2ossc01.azurecr.io/ubercadence/server
+    repository: ${azure-container-registry-name}.azurecr.io/ubercadence/server
     tag: 0.23.2
     pullPolicy: IfNotPresent
 
@@ -53,7 +53,7 @@ server:
     #  cpu: 100m
     #  memory: 128Mi
   nodeSelector: 
-    agentpool: somwfmc01
+    agentpool: ${nodeSelector-som}
   tolerations: []
   affinity: {}
 
@@ -167,12 +167,12 @@ server:
           # protoVersion: 4
 
         sql:
-          pluginName: mysql # mysql
-          host: mysqleu2ossc02.mysql.database.azure.com
-          port: 3306
-          database: cadence
-          user: cadence@mysqleu2ossc02
-          password: C4d3nc3DBus3r*
+          pluginName: ${cadence-db-plugin-name} # mysql
+          host: ${cadence-db-host}
+          port: ${cadence-db-port}
+          database: ${cadence-db-cadence-name}
+          user: ${cadence-db-user}
+          password: ${cadence-db-password}
           existingSecret: ""
           # maxConns: 20
           # maxIdleConns: 20
@@ -198,12 +198,12 @@ server:
           # protoVersion: 4
 
         sql:
-          pluginName: mysql # mysql
-          host: mysqleu2ossc02.mysql.database.azure.com
-          port: 3306
-          database: cadence_visibility
-          user: cadence@mysqleu2ossc02
-          password: C4d3nc3DBus3r*
+          pluginName: ${cadence-db-plugin-name} # mysql
+          host: ${cadence-db-host}
+          port: ${cadence-db-port}
+          database: ${cadence-db-cadence-visibility-name}
+          user: ${cadence-db-user}
+          password: ${cadence-db-password}
           existingSecret: ""
           # maxConns: 20
           # maxIdleConns: 20
@@ -230,7 +230,7 @@ server:
     securityContext: {}
     resources: {}
     nodeSelector: 
-      agentpool: somwfmc01
+      agentpool: ${nodeSelector-som}
     tolerations: []
     affinity: {}
 
@@ -254,8 +254,8 @@ server:
     podSecurityContext: {}
     securityContext: {}
     resources: {}
-    nodeSelector: 
-      agentpool: somwfmc01
+    nodeSelector:
+      agentpool: ${nodeSelector-som}
     tolerations: []
     affinity: {}
 
@@ -280,7 +280,7 @@ server:
     securityContext: {}
     resources: {}
     nodeSelector: 
-      agentpool: somwfmc01
+      agentpool: ${nodeSelector-som}
     tolerations: []
     affinity: {}
 
@@ -304,7 +304,7 @@ server:
     securityContext: {}
     resources: {}
     nodeSelector: 
-      agentpool: somwfmc01
+      agentpool: ${nodeSelector-som}
     tolerations: []
     affinity: {}
 
@@ -314,14 +314,13 @@ web:
   replicaCount: 1
 
   image:
-    repository: azacreu2ossc01.azurecr.io/ubercadence/web
-#estaba la v3.38.7
+    repository: ${azure-container-registry-name}.azurecr.io/ubercadence/web
     tag: v3.29.5
     pullPolicy: IfNotPresent
 
   tcheck:
     image:
-      repository: azacreu2ossc01.azurecr.io/banzaicloud/tcheck
+      repository: ${azure-container-registry-name}.azurecr.io/banzaicloud/tcheck
       tag: latest
       pullPolicy: IfNotPresent
 
@@ -370,7 +369,7 @@ web:
     #  memory: 128Mi
 
   nodeSelector: 
-    agentpool: somwfmc01
+    agentpool: ${nodeSelector-som}
 
   tolerations: []
 
@@ -382,10 +381,10 @@ dynamicConfig:
 
 schema:
   setup:
-    enabled: false
+    enabled: true
     backoffLimit: 100
   update:
-    enabled: false
+    enabled: true
     backoffLimit: 100
 
 cassandra:
