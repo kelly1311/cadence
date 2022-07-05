@@ -378,10 +378,10 @@ dynamicConfig:
 
 schema:
   setup:
-    enabled: false
+    enabled: true
     backoffLimit: 100
   update:
-    enabled: false
+    enabled: true
     backoffLimit: 100
 
 cassandra:
